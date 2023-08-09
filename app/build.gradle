@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.extreamSolution.ecommerce'
+    namespace 'com.extremeSolution.ecommerce'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.extreamSolution.ecommerce"
+        applicationId "com.extremeSolution.ecommerce"
         minSdk 24
         targetSdk 33
         versionCode 1
