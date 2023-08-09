@@ -64,8 +64,7 @@ class HomeViewModel @Inject constructor(
         return when {
             !products.isSuccessful -> UiState.Error(ErrorType.API_ERROR)
             products.code() != 200 -> UiState.Error(ErrorType.API_ERROR)
-            products.code() == 200 && (products.body().isNullOrEmpty() || products.body()
-                ?.toString()?.contains("error", true) == true) ->
+            products.code() == 200 && (products.body().isNullOrEmpty() ) ->
                 UiState.Error(ErrorType.API_ERROR)
 
             products.code() == 200 && products.body()?.isNotEmpty() == true ->

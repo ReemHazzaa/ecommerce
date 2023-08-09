@@ -11,10 +11,12 @@ import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
 import com.extremeSolution.ecommerce.app.extensions.showSnackBar
 import com.extremeSolution.ecommerce.app.ui.home.adapters.categories.CategoriesAdapter
+import com.extremeSolution.ecommerce.app.ui.home.adapters.products.ProductsAdapter
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.databinding.FragmentHomeBinding
+import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +29,9 @@ class HomeFragment : Fragment() {
     private val categoriesAdapter: CategoriesAdapter by lazy {
         CategoriesAdapter()
     }
+    private val productsAdapter: ProductsAdapter by lazy {
+        ProductsAdapter()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +43,7 @@ class HomeFragment : Fragment() {
         networkManager = NetworkManager(this.requireContext())
 
         initUI()
+        getCategoriesAndProducts()
 
         return view
     }
@@ -51,17 +57,19 @@ class HomeFragment : Fragment() {
         binding.apply {
             swipeRefresh.setOnRefreshListener {
                 swipeRefresh.isRefreshing = true
-                getCategories()
+                getCategoriesAndProducts()
                 swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun getCategories() {
+    private fun getCategoriesAndProducts() {
         showCategoriesLoading()
+        showProductsLoading()
         if (networkManager.isNetworkAvailable()) {
 
             viewModel.getCategoriesAndProductsAsync()
+
             viewModel.categoriesResponse.observe(viewLifecycleOwner) { response ->
                 when (response) {
                     is UiState.Loading -> showCategoriesLoading()
@@ -84,11 +92,34 @@ class HomeFragment : Fragment() {
                 }
             }
 
+            viewModel.productsResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is UiState.Loading -> showProductsLoading()
+                    is UiState.Success -> {
+                        hideProductsLoading()
+                        populateProductsRV(response.data)
+                    }
+
+                    is UiState.Error -> {
+                        hideProductsLoading()
+
+                        val errorMessage = when (response.errorType) {
+                            ErrorType.EXCEPTION -> response.message.toString()
+                            ErrorType.UNKNOWN -> getString(R.string.unidentified_error)
+                            ErrorType.API_ERROR -> getString(R.string.request_is_not_successful)
+                        }
+
+                        showErrorProducts(errorMessage)
+                    }
+                }
+            }
 
         } else {
             hideCategoriesLoading()
+            hideProductsLoading()
             getString(R.string.not_connected).let {
                 showErrorCategories(it)
+                showErrorProducts(it)
                 requireActivity().showSnackBar(it)
             }
         }
@@ -113,7 +144,6 @@ class HomeFragment : Fragment() {
     private fun showCategoriesLoading() {
         binding.apply {
             progressBarCategories.makeVisible()
-            errorTvCategories.makeInVisible()
             rvCategories.makeInVisible()
         }
     }
@@ -121,8 +151,37 @@ class HomeFragment : Fragment() {
     private fun hideCategoriesLoading() {
         binding.apply {
             progressBarCategories.makeInVisible()
-            errorTvCategories.makeInVisible()
             rvCategories.makeVisible()
+        }
+    }
+
+    private fun showErrorProducts(error: String) {
+        binding.apply {
+            errorLayoutProducts.makeVisible()
+            progressBarProducts.makeInVisible()
+            rvProducts.makeInVisible()
+            errorTvProducts.text = error
+        }
+    }
+
+    private fun showProductsLoading() {
+        binding.apply {
+            progressBarProducts.makeVisible()
+            rvProducts.makeInVisible()
+        }
+    }
+
+    private fun hideProductsLoading() {
+        binding.apply {
+            progressBarProducts.makeInVisible()
+            rvProducts.makeVisible()
+        }
+    }
+
+    private fun populateProductsRV(data: List<Product>?) {
+        data?.let {
+            productsAdapter.setData(it)
+            binding.rvProducts.adapter = productsAdapter
         }
     }
 }
