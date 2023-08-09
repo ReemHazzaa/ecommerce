@@ -2,4 +2,7 @@
     <string name="app_name">ecommerce</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="title_home">Home</string>
+    <string name="categories">Categories</string>
+    <string name="cart">Cart</string>
 </resources>
