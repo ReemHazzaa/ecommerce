@@ -14,7 +14,6 @@ sealed class UiState<T>(
 
 enum class ErrorType{
     API_ERROR,
-    API_ERROR_WITH_MESSAGE,
     EXCEPTION,
     UNKNOWN
 }

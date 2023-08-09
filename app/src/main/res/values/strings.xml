@@ -13,4 +13,7 @@
     <string name="women_s_clothing">Women\'s clothing</string>
     <string name="jewelery">Jewelery</string>
     <string name="electronics">Electronics</string>
+    <string name="not_connected">Not connected to the Internet!</string>
+    <string name="unidentified_error">Unknown error occured!</string>
+    <string name="request_is_not_successful">Request unsuccessful!</string>
 </resources>
