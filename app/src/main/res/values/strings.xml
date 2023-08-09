@@ -5,4 +5,12 @@
     <string name="title_home">Home</string>
     <string name="categories">Categories</string>
     <string name="cart">Cart</string>
+    <string name="intro_string">What are you looking for?</string>
+    <string name="search_products">Search products</string>
+    <string name="products">Products</string>
+    <string name="men_s_clothing">Men\'s clothing</string>
+    <string name="egp">EGP</string>
+    <string name="women_s_clothing">Women\'s clothing</string>
+    <string name="jewelery">Jewelery</string>
+    <string name="electronics">Electronics</string>
 </resources>

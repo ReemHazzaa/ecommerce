@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TopCurvedRect">
+        <item name="cornerSizeTopRight">4%</item>
+        <item name="cornerSizeTopLeft">4%</item>
+    </style>
+</resources>

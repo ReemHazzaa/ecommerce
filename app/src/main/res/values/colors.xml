@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey_818181">#818181</color>
+    <color name="grey_E3E2E5">#E3E2E5</color>
+    <color name="electronics_bg_color">#30000000</color>
+    <color name="electronics_txt_color">#000000</color>
+    <color name="jewelery_bg_color">#3096842d</color>
+    <color name="jewelery_txt_color">#96842d</color>
+    <color name="men_bg_color">#3000BCD4</color>
+    <color name="men_txt_color">#00BCD4</color>
+    <color name="women_bg_color">#30E91E63</color>
+    <color name="women_txt_color">#E91E63</color>
 </resources>
