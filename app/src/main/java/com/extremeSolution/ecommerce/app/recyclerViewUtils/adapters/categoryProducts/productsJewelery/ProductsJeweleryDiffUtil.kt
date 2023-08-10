@@ -1,10 +1,11 @@
-package com.extremeSolution.ecommerce.app.ui.home.adapters.categories
+package com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categoryProducts.productsJewelery
 
 import androidx.recyclerview.widget.DiffUtil
+import com.extremeSolution.ecommerce.domain.models.product.Product
 
-class CategoriesDiffUtil(
-    private val oldList: List<String>,
-    private val newList: List<String>,
+class ProductsJeweleryDiffUtil(
+    private val oldList: List<Product>,
+    private val newList: List<Product>,
 ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
 

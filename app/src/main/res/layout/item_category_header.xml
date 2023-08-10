@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="item"
             type="String" />
@@ -10,16 +11,12 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title"
+        setCategoryTvTxtColor="@{item}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
-        android:background="@drawable/rect_curved"
-        android:padding="10dp"
-        android:elevation="10dp"
-        android:textColor="@color/white"
-        setCategoryRvItemColors="@{item}"
-        android:textSize="20sp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="4dp"
         android:text="@{item}"
+        android:textSize="20sp"
         tools:text="Men's cloths" />
 </layout>

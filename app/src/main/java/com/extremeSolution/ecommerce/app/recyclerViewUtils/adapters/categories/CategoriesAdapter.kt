@@ -1,4 +1,4 @@
-package com.extremeSolution.ecommerce.app.ui.home.adapters.categories
+package com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categories
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -3,6 +3,7 @@ package com.extremeSolution.ecommerce.data.remote.apiService
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface FakeStoreApiService {
 
@@ -11,4 +12,7 @@ interface FakeStoreApiService {
 
     @GET("products")
     suspend fun getAllProducts(): Response<List<Product>>
+
+    @GET("products/category/{cName}")
+    suspend fun getProductsInCategory(@Path("cName") categoryName: String): Response<List<Product>>
 }

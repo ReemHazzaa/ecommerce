@@ -10,8 +10,8 @@ import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
 import com.extremeSolution.ecommerce.app.extensions.showSnackBar
-import com.extremeSolution.ecommerce.app.ui.home.adapters.categories.CategoriesAdapter
-import com.extremeSolution.ecommerce.app.ui.home.adapters.products.ProductsAdapter
+import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categories.CategoriesAdapter
+import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.products.ProductsAdapter
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
     private val categoriesAdapter: CategoriesAdapter by lazy {
         CategoriesAdapter()
     }
-    private lateinit var productsAdapter: ProductsAdapter
+    private val productsAdapter: ProductsAdapter by lazy { ProductsAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -174,13 +174,8 @@ class HomeFragment : Fragment() {
 
     private fun populateProductsRV(data: List<Product>?) {
         data?.let {
-            if(!::productsAdapter.isInitialized){
-                productsAdapter = ProductsAdapter()
-                productsAdapter.setData(it)
-                binding.rvProducts.adapter = productsAdapter
-            } else {
-                productsAdapter.setData(it)
-            }
+            binding.rvProducts.adapter = productsAdapter
+            productsAdapter.setData(it)
         }
     }
 }

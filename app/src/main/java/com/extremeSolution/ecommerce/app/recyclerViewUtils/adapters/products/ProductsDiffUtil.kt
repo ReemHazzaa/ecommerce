@@ -1,4 +1,4 @@
-package com.extremeSolution.ecommerce.app.ui.home.adapters.products
+package com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.products
 
 import androidx.recyclerview.widget.DiffUtil
 import com.extremeSolution.ecommerce.domain.models.product.Product

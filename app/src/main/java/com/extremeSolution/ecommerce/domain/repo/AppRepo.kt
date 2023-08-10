@@ -7,4 +7,6 @@ interface AppRepo {
     suspend fun getCategoriesList(): Response<List<String>>
 
     suspend fun getAllProducts(): Response<List<Product>>
+
+    suspend fun getProductsInCategory(category: String): Response<List<Product>>
 }

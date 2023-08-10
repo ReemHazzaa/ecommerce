@@ -11,36 +11,32 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_width="@dimen/item_category_horizontal_width"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="6dp"
         android:layout_marginBottom="6dp"
         android:background="@drawable/rect_curved"
-        android:backgroundTint="@color/women_bg_color">
+        android:backgroundTint="@color/electronics_bg_color">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_image"
             loadImageWithPicasso="@{item.image}"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/TopCurvedRect" />
 
-        <TextView
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/rect_curved"
-            android:backgroundTint="@color/women_txt_color"
-            android:padding="5dp"
-            android:text="@string/women_s_clothing"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.50" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_title"
@@ -80,8 +76,10 @@
             android:textColor="@color/black"
             android:textSize="25sp"
             app:fontFamily="@font/teko"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_egp"
             app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintVertical_bias="0.0"
             tools:text="109.95" />
 
 

@@ -19,7 +19,7 @@
         android:backgroundTint="@color/electronics_bg_color">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_course_image"
+            android:id="@+id/iv_image"
             loadImageWithPicasso="@{item.image}"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -56,7 +56,7 @@
             app:fontFamily="@font/teko"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_course_image"
+            app:layout_constraintTop_toBottomOf="@+id/iv_image"
             tools:text="Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops" />
 
         <com.google.android.material.textview.MaterialTextView

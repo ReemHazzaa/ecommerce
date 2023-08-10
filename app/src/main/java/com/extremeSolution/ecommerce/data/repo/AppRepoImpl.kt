@@ -16,4 +16,9 @@ class AppRepoImpl @Inject constructor(
     override suspend fun getAllProducts(): Response<List<Product>> {
         return apiService.getAllProducts()
     }
+
+    override suspend fun getProductsInCategory(category: String): Response<List<Product>> {
+        return apiService.getProductsInCategory(category)
+    }
+
 }
