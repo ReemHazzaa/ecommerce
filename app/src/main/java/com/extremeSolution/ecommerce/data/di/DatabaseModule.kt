@@ -2,7 +2,7 @@ package com.extremeSolution.ecommerce.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.extremeSolution.ecommerce.app.Constants.DATABASE_NAME
+import com.extremeSolution.ecommerce.app.utils.Constants.DATABASE_NAME
 import com.extremeSolution.ecommerce.data.local.ProductsDatabase
 import dagger.Module
 import dagger.Provides

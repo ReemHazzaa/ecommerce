@@ -1,4 +1,4 @@
-package com.extremeSolution.ecommerce.app
+package com.extremeSolution.ecommerce.app.utils
 
 object Constants {
     // Room DB

@@ -2,7 +2,7 @@ package com.extremeSolution.ecommerce.domain.models.product
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.extremeSolution.ecommerce.app.Constants.PRODUCTS_TABLE
+import com.extremeSolution.ecommerce.app.utils.Constants.PRODUCTS_TABLE
 
 @Entity(tableName = PRODUCTS_TABLE)
 data class Product(

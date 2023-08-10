@@ -6,7 +6,7 @@ import androidx.databinding.BindingAdapter
 import com.extremeSolution.ecommerce.R
 import com.squareup.picasso.Picasso
 
-class HomeBindingAdapters {
+class AppBindingAdapters {
     companion object {
 
         @JvmStatic

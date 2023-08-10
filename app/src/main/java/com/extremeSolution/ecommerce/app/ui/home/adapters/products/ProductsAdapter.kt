@@ -1,18 +1,20 @@
 package com.extremeSolution.ecommerce.app.ui.home.adapters.products
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.extremeSolution.ecommerce.app.Constants.VIEW_TYPE_ELECTRONICS_TITLE
-import com.extremeSolution.ecommerce.app.Constants.VIEW_TYPE_JEWELRY_TITLE
-import com.extremeSolution.ecommerce.app.Constants.VIEW_TYPE_MEN_TITLE
-import com.extremeSolution.ecommerce.app.Constants.VIEW_TYPE_WOMEN_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_ELECTRONICS_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_JEWELRY_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_MEN_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_WOMEN_TITLE
 import com.extremeSolution.ecommerce.databinding.ItemCategoryElectronicsBinding
 import com.extremeSolution.ecommerce.databinding.ItemCategoryJeweleryBinding
 import com.extremeSolution.ecommerce.databinding.ItemCategoryMenBinding
 import com.extremeSolution.ecommerce.databinding.ItemCategoryWomenBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
+
 
 class ProductsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
@@ -133,5 +135,6 @@ class ProductsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val diffUtilResult = DiffUtil.calculateDiff(productsDiffUtil)
         data = newList
         diffUtilResult.dispatchUpdatesTo(this)
+
     }
 }

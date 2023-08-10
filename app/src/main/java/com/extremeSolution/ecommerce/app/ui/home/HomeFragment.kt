@@ -29,9 +29,7 @@ class HomeFragment : Fragment() {
     private val categoriesAdapter: CategoriesAdapter by lazy {
         CategoriesAdapter()
     }
-    private val productsAdapter: ProductsAdapter by lazy {
-        ProductsAdapter()
-    }
+    private lateinit var productsAdapter: ProductsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -180,8 +178,13 @@ class HomeFragment : Fragment() {
 
     private fun populateProductsRV(data: List<Product>?) {
         data?.let {
-            productsAdapter.setData(it)
-            binding.rvProducts.adapter = productsAdapter
+            if(!::productsAdapter.isInitialized){
+                productsAdapter = ProductsAdapter()
+                productsAdapter.setData(it)
+                binding.rvProducts.adapter = productsAdapter
+            } else {
+                productsAdapter.setData(it)
+            }
         }
     }
 }
