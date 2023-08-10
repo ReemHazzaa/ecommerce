@@ -140,9 +140,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showCategoriesLoading() {
-        binding.apply {
-            progressBarCategories.makeVisible()
-        }
+        binding.progressBarCategories.makeVisible()
     }
 
     private fun hideCategoriesLoading() {
@@ -163,9 +161,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showProductsLoading() {
-        binding.apply {
-            progressBarProducts.makeVisible()
-        }
+        binding.progressBarProducts.makeVisible()
     }
 
     private fun hideProductsLoading() {
