@@ -142,7 +142,6 @@ class HomeFragment : Fragment() {
     private fun showCategoriesLoading() {
         binding.apply {
             progressBarCategories.makeVisible()
-            rvCategories.makeInVisible()
         }
     }
 
@@ -150,6 +149,7 @@ class HomeFragment : Fragment() {
         binding.apply {
             progressBarCategories.makeInVisible()
             rvCategories.makeVisible()
+            errorTvCategories.makeInVisible()
         }
     }
 
@@ -165,7 +165,6 @@ class HomeFragment : Fragment() {
     private fun showProductsLoading() {
         binding.apply {
             progressBarProducts.makeVisible()
-            rvProducts.makeInVisible()
         }
     }
 
@@ -173,6 +172,7 @@ class HomeFragment : Fragment() {
         binding.apply {
             progressBarProducts.makeInVisible()
             rvProducts.makeVisible()
+            errorLayoutProducts.makeInVisible()
         }
     }
 
