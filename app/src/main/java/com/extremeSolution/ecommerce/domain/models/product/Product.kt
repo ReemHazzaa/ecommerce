@@ -6,12 +6,13 @@ import com.extremeSolution.ecommerce.app.utils.Constants.PRODUCTS_TABLE
 
 @Entity(tableName = PRODUCTS_TABLE)
 data class Product(
-    val category: String,
-    val description: String,
     @PrimaryKey
-    val id: Int,
-    val image: String,
-    val price: Double,
-    val rating: Rating,
-    val title: String
+    var id: Int,
+    var category: String,
+    var description: String,
+    var image: String,
+    var price: Double,
+    var rating: Rating,
+    var title: String,
+    var inCart: Boolean = false
 )
