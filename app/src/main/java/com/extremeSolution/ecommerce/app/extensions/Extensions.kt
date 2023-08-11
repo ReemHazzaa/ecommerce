@@ -49,7 +49,7 @@ fun Activity.showSnackBar(
 }
 
 fun ImageView.loadImageWithPicasso(imageUri: String) {
-    Picasso.with(context).load(imageUri).fit().centerCrop()
+    Picasso.get().load(imageUri).fit().centerCrop()
         .placeholder(R.drawable.image_gallery)
         .error(R.drawable.error)
         .into(this);

@@ -20,7 +20,7 @@ class AppBindingAdapters {
         @JvmStatic
         @BindingAdapter("loadImageWithPicasso")
         fun loadImageWithPicasso(imageView: ImageView, url: String) {
-            Picasso.with(imageView.context).load(url).fit().centerCrop()
+            Picasso.get().load(url).fit().centerCrop()
                 .placeholder(R.drawable.image_gallery)
                 .error(R.drawable.error)
                 .into(imageView)

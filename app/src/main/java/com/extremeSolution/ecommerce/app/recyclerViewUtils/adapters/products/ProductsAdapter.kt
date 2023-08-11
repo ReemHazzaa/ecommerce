@@ -1,6 +1,7 @@
 package com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.products
 
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.extremeSolution.ecommerce.app.mappers.mapCategoryNameToViewTypeInt
@@ -8,14 +9,13 @@ import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.customViewHo
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.customViewHolders.CategoryJeweleryGridVH
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.customViewHolders.CategoryMenGridVH
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.customViewHolders.CategoryWomenGridVH
-import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_ELECTRONICS_TITLE
-import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_JEWELRY_TITLE
-import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_MEN_TITLE
-import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_WOMEN_TITLE
+import com.extremeSolution.ecommerce.app.ui.home.HomeFragmentDirections
 import com.extremeSolution.ecommerce.domain.models.product.Product
 
 
-class ProductsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductsAdapter(
+    private val navController: NavController
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val VIEW_TYPE_MEN = 1
         const val VIEW_TYPE_WOMEN = 2
@@ -44,6 +44,12 @@ class ProductsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             VIEW_TYPE_WOMEN -> (holder as CategoryWomenGridVH).bind(currentItem)
             VIEW_TYPE_JEWELRY -> (holder as CategoryJeweleryGridVH).bind(currentItem)
             VIEW_TYPE_ELECTRONICS -> (holder as CategoryElectronicsGridVH).bind(currentItem)
+        }
+
+        holder.itemView.setOnClickListener {
+            val action =
+                HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(currentItem.id)
+            navController.navigate(action)
         }
     }
 

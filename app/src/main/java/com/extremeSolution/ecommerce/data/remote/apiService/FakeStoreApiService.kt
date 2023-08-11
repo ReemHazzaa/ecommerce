@@ -16,6 +16,6 @@ interface FakeStoreApiService {
     @GET("products/category/{cName}")
     suspend fun getProductsInCategory(@Path("cName") categoryName: String): Response<List<Product>>
 
-    @GET("products/category/{id}")
+    @GET("products/{id}")
     suspend fun getProductDetails(@Path("id") productId: Int): Response<Product>
 }

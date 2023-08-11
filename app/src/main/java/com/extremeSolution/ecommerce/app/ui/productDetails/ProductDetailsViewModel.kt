@@ -34,7 +34,7 @@ class ProductDetailsViewModel @Inject constructor(
     private fun getProductDetails(id: Int) = viewModelScope.launch {
         _productsResponse.value = UiState.Loading()
         try {
-            val response = productDetailsUseCase.execute()
+            val response = productDetailsUseCase.execute(GetProductDetailsUseCase.Params(id))
             _productsResponse.value = handleResponse(response)
         } catch (e: Exception) {
             _productsResponse.value = UiState.Error(ErrorType.EXCEPTION, e.message.toString())
