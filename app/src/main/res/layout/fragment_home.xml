@@ -30,25 +30,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="10dp"
-                android:fontFamily="@font/teko"
-                android:text="@string/search_products"
-                android:textAlignment="viewStart"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:backgroundTint="@color/black"
-                app:cornerRadius="10dp"
-                app:icon="@drawable/round_search_24"
-                app:iconTint="@color/white"
+                app:iconifiedByDefault="false"
+                android:background="@drawable/rect_curved"
+                android:backgroundTint="#30000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_header" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_header"
+                android:fontFamily="@font/teko"
+                app:searchIcon="@drawable/round_search_24"
+                app:queryHint="@string/search_products" />
 
             <TextView
                 android:id="@+id/tv_categories"
