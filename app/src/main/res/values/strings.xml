@@ -16,4 +16,6 @@
     <string name="not_connected">Not connected to the Internet!</string>
     <string name="unidentified_error">Unknown error occured!</string>
     <string name="request_is_not_successful">Request unsuccessful!</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="user_reviews">Customer Reviews</string>
 </resources>
