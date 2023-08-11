@@ -4,4 +4,13 @@
         <item name="cornerSizeTopRight">10%</item>
         <item name="cornerSizeTopLeft">10%</item>
     </style>
+
+    <style name="LeftCurvedRect">
+        <item name="cornerSizeBottomLeft">4%</item>
+        <item name="cornerSizeTopLeft">4%</item>
+    </style>
+
+    <style name="Circular">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
