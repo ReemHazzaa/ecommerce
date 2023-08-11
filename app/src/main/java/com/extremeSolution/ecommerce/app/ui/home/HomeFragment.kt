@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -20,6 +21,7 @@ import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.databinding.FragmentHomeBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -32,6 +34,8 @@ class HomeFragment : Fragment() {
         CategoriesAdapter()
     }
     private lateinit var productsAdapter: ProductsAdapter
+
+    private var globalProductsList = mutableListOf<Product>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,8 +65,53 @@ class HomeFragment : Fragment() {
                 getCategoriesAndProducts()
                 swipeRefresh.isRefreshing = false
             }
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    newText?.let { searchProducts(it) }
+                    return false
+                }
+
+            })
         }
     }
+
+    private fun searchProducts(sQuery: String) {
+        val searchList = mutableListOf<Product>()
+
+        // running a for loop to compare elements.
+        for (item in globalProductsList) {
+            // checking if the entered string matched with any item of our recycler view.
+            if (item.category.lowercase(Locale.getDefault())
+                    .contains(sQuery.lowercase(Locale.getDefault()))
+                || item.title.lowercase(Locale.getDefault())
+                    .contains(sQuery.lowercase(Locale.getDefault()))
+                || item.description.lowercase(Locale.getDefault())
+                    .contains(sQuery.lowercase(Locale.getDefault()))
+            ) {
+                // if the item is matched we are
+                // adding it to our filtered list.
+                searchList.add(item)
+            }
+        }
+        if (searchList.isEmpty()) {
+            // if no item is added in filtered list we are
+            // displaying a toast message as no data found.
+            showErrorProducts("No Data Found..")
+        } else {
+            // at last we are passing that filtered
+            // list to our adapter class.
+            productsAdapter.setData(searchList)
+        }
+        if (sQuery == "") {
+            populateProductsRV(globalProductsList)
+        }
+    }
+
 
     private fun getCategoriesAndProducts() {
         showCategoriesLoading()
@@ -99,6 +148,9 @@ class HomeFragment : Fragment() {
                     is UiState.Success -> {
                         hideProductsLoading()
                         populateProductsRV(response.data)
+
+                        globalProductsList.clear()
+                        globalProductsList.addAll(response.data!!)
                     }
 
                     is UiState.Error -> {
@@ -177,9 +229,15 @@ class HomeFragment : Fragment() {
 
     private fun populateProductsRV(data: List<Product>?) {
         data?.let {
-            binding.rvProducts.layoutManager =
-                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            binding.rvProducts.adapter = productsAdapter
+            binding.apply {
+                errorLayoutProducts.makeInVisible()
+                rvProducts.makeVisible()
+            }
+            binding.rvProducts.apply {
+                layoutManager =
+                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                adapter = productsAdapter
+            }
             productsAdapter.setData(it)
         }
     }
