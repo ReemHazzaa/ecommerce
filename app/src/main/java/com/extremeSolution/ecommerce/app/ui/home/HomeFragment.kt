@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
@@ -176,6 +177,8 @@ class HomeFragment : Fragment() {
 
     private fun populateProductsRV(data: List<Product>?) {
         data?.let {
+            binding.rvProducts.layoutManager =
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             binding.rvProducts.adapter = productsAdapter
             productsAdapter.setData(it)
         }
