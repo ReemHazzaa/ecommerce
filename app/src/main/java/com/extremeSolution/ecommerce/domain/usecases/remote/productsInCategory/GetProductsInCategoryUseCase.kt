@@ -1,4 +1,4 @@
-package com.extremeSolution.ecommerce.domain.usecases.productsInCategory
+package com.extremeSolution.ecommerce.domain.usecases.remote.productsInCategory
 
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import com.extremeSolution.ecommerce.domain.repo.AppRepo

@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.domain.models.product.Product
-import com.extremeSolution.ecommerce.domain.usecases.categories.GetCategoriesUseCase
-import com.extremeSolution.ecommerce.domain.usecases.products.GetProductsUseCase
+import com.extremeSolution.ecommerce.domain.usecases.remote.categories.GetCategoriesUseCase
+import com.extremeSolution.ecommerce.domain.usecases.remote.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

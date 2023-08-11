@@ -11,8 +11,8 @@ import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_MEN_TITLE
 import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_WOMEN_TITLE
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.domain.models.product.Product
-import com.extremeSolution.ecommerce.domain.usecases.categories.GetCategoriesUseCase
-import com.extremeSolution.ecommerce.domain.usecases.productsInCategory.GetProductsInCategoryUseCase
+import com.extremeSolution.ecommerce.domain.usecases.remote.categories.GetCategoriesUseCase
+import com.extremeSolution.ecommerce.domain.usecases.remote.productsInCategory.GetProductsInCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

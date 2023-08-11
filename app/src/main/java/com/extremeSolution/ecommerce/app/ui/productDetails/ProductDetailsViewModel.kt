@@ -8,7 +8,7 @@ import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.domain.models.product.Product
-import com.extremeSolution.ecommerce.domain.usecases.productDetails.GetProductDetailsUseCase
+import com.extremeSolution.ecommerce.domain.usecases.remote.productDetails.GetProductDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
