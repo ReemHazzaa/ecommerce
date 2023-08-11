@@ -1,14 +1,19 @@
 package com.extremeSolution.ecommerce.data.repo
 
+import com.extremeSolution.ecommerce.data.local.ProductsDao
 import com.extremeSolution.ecommerce.data.remote.apiService.FakeStoreApiService
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import com.extremeSolution.ecommerce.domain.repo.AppRepo
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
 
 class AppRepoImpl @Inject constructor(
-    private val apiService: FakeStoreApiService
+    private val apiService: FakeStoreApiService,
+    private val productsDao: ProductsDao
 ) : AppRepo {
+
+    // REMOTE
     override suspend fun getCategoriesList(): Response<List<String>> {
         return apiService.getCategoriesList()
     }
@@ -23,6 +28,35 @@ class AppRepoImpl @Inject constructor(
 
     override suspend fun getProductDetails(productId: Int): Response<Product> {
         return apiService.getProductDetails(productId)
+    }
+
+    // LOCAL
+    override suspend fun insertProductToDB(product: Product) {
+        return productsDao.insertProduct(product)
+    }
+
+    override suspend fun readProductFromDB(productId: Int): Flow<Product> {
+        return productsDao.readProduct(productId)
+    }
+
+    override suspend fun deleteProductFromDB(product: Product) {
+        return productsDao.deleteProduct(product)
+    }
+
+    override suspend fun readAllProductsFromDB(): Flow<List<Product>> {
+        return productsDao.readAllProducts()
+    }
+
+    override suspend fun deleteAllProductsFromDB() {
+        return productsDao.deleteAllProducts()
+    }
+
+    override suspend fun addProductToCart(productId: Int) {
+        return productsDao.addProductToCart(productId)
+    }
+
+    override suspend fun removeProductFromCart(productId: Int) {
+        return productsDao.removeProductFromCart(productId)
     }
 
 }
