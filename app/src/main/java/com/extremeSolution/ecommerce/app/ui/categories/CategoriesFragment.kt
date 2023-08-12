@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
@@ -16,9 +17,14 @@ import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categoryProd
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categoryProducts.productsWomen.ProductsWomenAdapter
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_ELECTRONICS_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_JEWELRY_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_MEN_TITLE
+import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_WOMEN_TITLE
 import com.extremeSolution.ecommerce.databinding.FragmentCategoriesBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CategoriesFragment : Fragment() {
@@ -50,7 +56,7 @@ class CategoriesFragment : Fragment() {
         val view = binding.root
 
         initUI()
-        getCategoriesThenProductsInEachOne()
+        loadDataFromCacheWhenOnline()
 
         return view
     }
@@ -64,8 +70,7 @@ class CategoriesFragment : Fragment() {
         binding.apply {
             swipeRefresh.setOnRefreshListener {
                 swipeRefresh.isRefreshing = true
-                getCategoriesThenProductsInEachOne()
-                swipeRefresh.isRefreshing = false
+                loadDataFromCacheWhenOnline()
             }
         }
     }
@@ -155,6 +160,7 @@ class CategoriesFragment : Fragment() {
 
                 is UiState.Error -> {
                     hideJeweleryLoading()
+                    loadDataFromCacheWhenOffline()
 
                     val errorMessage = when (response.errorType) {
                         ErrorType.EXCEPTION -> response.message.toString()
@@ -177,6 +183,7 @@ class CategoriesFragment : Fragment() {
 
                 is UiState.Error -> {
                     hideElectronicsLoading()
+                    loadDataFromCacheWhenOffline()
 
                     val errorMessage = when (response.errorType) {
                         ErrorType.EXCEPTION -> response.message.toString()
@@ -253,6 +260,7 @@ class CategoriesFragment : Fragment() {
             progressBarCategories.makeInVisible()
             rvCategories.makeVisible()
             errorTvCategories.makeInVisible()
+            if (swipeRefresh.isRefreshing) swipeRefresh.isRefreshing = false
         }
     }
 
@@ -261,6 +269,7 @@ class CategoriesFragment : Fragment() {
             progressBarProductsMen.makeInVisible()
             rvProductsMen.makeVisible()
             errorTvMen.makeInVisible()
+            if (swipeRefresh.isRefreshing) swipeRefresh.isRefreshing = false
         }
     }
 
@@ -269,6 +278,7 @@ class CategoriesFragment : Fragment() {
             progressBarProductsWomen.makeInVisible()
             rvProductsWomen.makeVisible()
             errorTvWomen.makeInVisible()
+            if (swipeRefresh.isRefreshing) swipeRefresh.isRefreshing = false
         }
     }
 
@@ -277,6 +287,7 @@ class CategoriesFragment : Fragment() {
             progressBarProductsJewelery.makeInVisible()
             rvProductsJewelery.makeVisible()
             errorTvJewelery.makeInVisible()
+            if (swipeRefresh.isRefreshing) swipeRefresh.isRefreshing = false
         }
     }
 
@@ -285,6 +296,7 @@ class CategoriesFragment : Fragment() {
             progressBarProductsElectronics.makeInVisible()
             rvProductsElectronics.makeVisible()
             errorTvElectronics.makeInVisible()
+            if (swipeRefresh.isRefreshing) swipeRefresh.isRefreshing = false
         }
     }
 
@@ -331,6 +343,93 @@ class CategoriesFragment : Fragment() {
             progressBarProductsElectronics.makeInVisible()
             rvProductsElectronics.makeInVisible()
             errorTvElectronics.text = error
+        }
+    }
+
+    private fun loadDataFromCacheWhenOnline() {
+        showCategoriesLoading()
+        showMenLoading()
+        showWomenLoading()
+        showJeweleryLoading()
+        showElectronicsLoading()
+
+        lifecycleScope.launch {
+
+            viewModel.categoriesCache.observe(viewLifecycleOwner) { cachedCategories ->
+                if (cachedCategories != null && cachedCategories.isNotEmpty()) {
+                    hideCategoriesLoading()
+                    populateCategoriesRV(cachedCategories)
+                } else {
+                    getCategoriesThenProductsInEachOne()
+                }
+            }
+
+            viewModel.productsCache.observe(viewLifecycleOwner) { database ->
+                if (database.isNotEmpty()) {
+
+
+                    hideWomenLoading()
+                    hideJeweleryLoading()
+                    hideMenLoading()
+                    hideElectronicsLoading()
+
+                    populateProductsRVsFromCache(database)
+
+                } else {
+                    getCategoriesThenProductsInEachOne()
+                }
+            }
+        }
+    }
+
+    private fun populateProductsRVsFromCache(database: List<Product>) {
+        val menList = mutableListOf<Product>()
+        val womenList = mutableListOf<Product>()
+        val jeweleryList = mutableListOf<Product>()
+        val electronicsList = mutableListOf<Product>()
+
+        for (product in database) {
+            when (product.category) {
+                VIEW_TYPE_MEN_TITLE -> menList.add(product)
+                VIEW_TYPE_WOMEN_TITLE -> womenList.add(product)
+                VIEW_TYPE_JEWELRY_TITLE -> jeweleryList.add(product)
+                VIEW_TYPE_ELECTRONICS_TITLE -> electronicsList.add(product)
+            }
+        }
+
+        populateMenRV(menList)
+        populateWomenRV(womenList)
+        populateJeweleryRV(jeweleryList)
+        populateElectronicsRV(electronicsList)
+    }
+
+    private fun loadDataFromCacheWhenOffline() {
+        lifecycleScope.launch {
+            viewModel.categoriesCache.observe(viewLifecycleOwner) { cachedCategories ->
+                if (cachedCategories.isNotEmpty()) {
+                    hideCategoriesLoading()
+                    populateCategoriesRV(cachedCategories)
+                } else {
+                    showErrorCategories(getString(R.string.no_data_found))
+                }
+
+            }
+
+            viewModel.productsCache.observe(viewLifecycleOwner) { database ->
+                if (database.isNotEmpty()) {
+                    hideWomenLoading()
+                    hideJeweleryLoading()
+                    hideMenLoading()
+                    hideElectronicsLoading()
+
+                    populateProductsRVsFromCache(database)
+                } else {
+                    showErrorMen(getString(R.string.no_data_found))
+                    showErrorWomen(getString(R.string.no_data_found))
+                    showErrorJewelery(getString(R.string.no_data_found))
+                    showErrorElectronics(getString(R.string.no_data_found))
+                }
+            }
         }
     }
 

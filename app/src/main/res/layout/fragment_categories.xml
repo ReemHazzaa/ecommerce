@@ -16,18 +16,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/tv_categories"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/categories" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_categories"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:paddingVertical="2dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_categories"
                 app:layout_constraintVertical_bias="0.0"
                 tools:listitem="@layout/item_category" />
 
@@ -37,10 +50,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="invisible"
+                app:layout_constraintTop_toBottomOf="@+id/tv_categories"
                 app:layout_constraintBottom_toTopOf="@+id/tv_products_men"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/errorTvCategories"
@@ -53,7 +66,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_products_men"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_categories" />
 
             <!-- Men -->
             <TextView

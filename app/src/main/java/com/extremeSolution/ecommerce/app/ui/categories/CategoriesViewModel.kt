@@ -3,6 +3,7 @@ package com.extremeSolution.ecommerce.app.ui.categories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
@@ -11,6 +12,8 @@ import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_MEN_TITLE
 import com.extremeSolution.ecommerce.app.utils.Constants.VIEW_TYPE_WOMEN_TITLE
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.domain.models.product.Product
+import com.extremeSolution.ecommerce.domain.usecases.datastore.readCategories.ReadCachedCategoriesUseCase
+import com.extremeSolution.ecommerce.domain.usecases.local.readCachedProducts.ReadCachedProductsUseCase
 import com.extremeSolution.ecommerce.domain.usecases.remote.categories.GetCategoriesUseCase
 import com.extremeSolution.ecommerce.domain.usecases.remote.productsInCategory.GetProductsInCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +27,8 @@ import javax.inject.Inject
 class CategoriesViewModel @Inject constructor(
     private val categoriesUseCase: GetCategoriesUseCase,
     private val productsInCategoryUseCase: GetProductsInCategoryUseCase,
+    readCachedCategoriesUseCase: ReadCachedCategoriesUseCase,
+    readCachedProductsUseCase: ReadCachedProductsUseCase,
     private val networkManager: NetworkManager
 ) : ViewModel() {
     private var _categoriesResponse: MutableLiveData<UiState<List<String>>> = MutableLiveData()
@@ -180,5 +185,10 @@ class CategoriesViewModel @Inject constructor(
             else -> UiState.Error(ErrorType.UNKNOWN)
         }
     }
+
+    /** CACHE */
+
+    val productsCache: LiveData<List<Product>> = readCachedProductsUseCase.execute().asLiveData()
+    val categoriesCache: LiveData<List<String>> = readCachedCategoriesUseCase.execute().asLiveData()
 
 }

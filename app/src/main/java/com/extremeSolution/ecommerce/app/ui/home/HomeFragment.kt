@@ -177,6 +177,7 @@ class HomeFragment : Fragment() {
 
                 is UiState.Error -> {
                     hideCategoriesLoading()
+                    loadDataFromCacheWhenOffline()
 
                     val errorMessage = when (response.errorType) {
                         ErrorType.EXCEPTION -> response.message.toString()
