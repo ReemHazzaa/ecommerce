@@ -13,19 +13,25 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
+import com.extremeSolution.ecommerce.app.extensions.showSnackBar
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.databinding.FragmentProductDetailsBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
+import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProductDetailsFragment : Fragment() {
+    private var inCartId: Int = 0
+    private lateinit var globalProduct: Product
     private var _binding: FragmentProductDetailsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ProductDetailsViewModel by viewModels()
     private val args: ProductDetailsFragmentArgs by navArgs()
+
+    private var productInCart = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +42,7 @@ class ProductDetailsFragment : Fragment() {
 
         initUI()
         loadDataFromCacheWhenOnline()
+        checkInCartItem(binding.btAddToCart)
 
         return view
     }
@@ -51,6 +58,16 @@ class ProductDetailsFragment : Fragment() {
                 swipeRefresh.isRefreshing = true
                 loadDataFromCacheWhenOnline()
             }
+
+            btAddToCart.setOnClickListener {
+                if (::globalProduct.isInitialized) {
+                    if (productInCart) {
+                        removeFromCart()
+                    } else {
+                        saveToCart()
+                    }
+                }
+            }
         }
     }
 
@@ -62,6 +79,7 @@ class ProductDetailsFragment : Fragment() {
                 if (product?.title != null) {
                     hideLoading()
                     populateUI(product)
+                    globalProduct = product
                 } else {
                     getDetails()
                 }
@@ -75,6 +93,7 @@ class ProductDetailsFragment : Fragment() {
                 if (product?.title != null) {
                     hideLoading()
                     populateUI(product)
+                    globalProduct = product
                 } else {
                     showError(getString(R.string.no_data_found))
                 }
@@ -92,6 +111,7 @@ class ProductDetailsFragment : Fragment() {
                 is UiState.Success -> {
                     hideLoading()
                     populateUI(response.data)
+                    globalProduct = response.data!!
                 }
 
                 is UiState.Error -> {
@@ -155,5 +175,56 @@ class ProductDetailsFragment : Fragment() {
         }
     }
 
+    private fun checkInCartItem(button: MaterialButton) {
+        viewModel.cart.observe(viewLifecycleOwner) { products ->
+            try {
+                val product = products.find { it.id == globalProduct.id }
+                if (product != null) {   // is in cart
+                    changeAddToCartButtonState(
+                        button,
+                        getString(R.string.in_cart),
+                    )
+                    inCartId = product.id
+                    productInCart = true
+                } else {
+                    changeAddToCartButtonState(
+                        button,
+                        getString(R.string.add_to_cart),
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
+    private fun saveToCart() {
+        viewModel.addProductToCart(globalProduct)
+        changeAddToCartButtonState(
+            binding.btAddToCart,
+            getString(R.string.in_cart)
+        )
+        activity?.showSnackBar(getString(R.string.added_to_cart))
+        productInCart = true
+        inCartId = globalProduct.id
+
+    }
+
+    private fun removeFromCart() {
+        viewModel.removeProductFromCart(globalProduct.id)
+        changeAddToCartButtonState(
+            binding.btAddToCart,
+            getString(R.string.add_to_cart),
+        )
+        activity?.showSnackBar(getString(R.string.removed_from_cart))
+        productInCart = false
+    }
+
+
+    private fun changeAddToCartButtonState(
+        button: MaterialButton,
+        buttonTxt: String,
+    ) {
+        button.text = buttonTxt
+    }
 }

@@ -9,9 +9,13 @@ import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.domain.models.product.Product
+import com.extremeSolution.ecommerce.domain.usecases.local.cart.addProductToCart.AddProductToCartUseCase
+import com.extremeSolution.ecommerce.domain.usecases.local.cart.readCart.ReadCartUseCase
+import com.extremeSolution.ecommerce.domain.usecases.local.cart.removeProductFromCart.RemoveProductFromCartUseCase
 import com.extremeSolution.ecommerce.domain.usecases.local.readProductFromDB.ReadProductFromDBUseCase
 import com.extremeSolution.ecommerce.domain.usecases.remote.productDetails.GetProductDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -20,6 +24,9 @@ import javax.inject.Inject
 class ProductDetailsViewModel @Inject constructor(
     private val productDetailsUseCase: GetProductDetailsUseCase,
     private val readProductFromDBUseCase: ReadProductFromDBUseCase,
+    private val addProductToCartUseCase: AddProductToCartUseCase,
+    private val readCartUseCase: ReadCartUseCase,
+    private val removeProductFromCartUseCase: RemoveProductFromCartUseCase,
     private val networkManager: NetworkManager
 ): ViewModel() {
 
@@ -61,9 +68,22 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     /** CACHE */
+    val cart: LiveData<List<Product>> = readCartUseCase.execute().asLiveData()
 
     fun readProductCached(id: Int): LiveData<Product> {
         return readProductFromDBUseCase.execute(id).asLiveData()
+    }
+
+    fun addProductToCart(product: Product) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addProductToCartUseCase.execute(product.id)
+        }
+    }
+
+    fun removeProductFromCart(productId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            removeProductFromCartUseCase.execute(productId)
+        }
     }
 
 }

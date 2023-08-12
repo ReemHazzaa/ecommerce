@@ -22,4 +22,7 @@
     <string name="empty_cart_msg">So sad!! Your cart is empty.\nWe are positive, you will fill it soon :)</string>
     <string name="no_data_found">No data found</string>
     <string name="delete_all_items_in_cart">Delete all items in cart?</string>
+    <string name="in_cart">In cart</string>
+    <string name="removed_from_cart">Removed from cart</string>
+    <string name="added_to_cart">Added to cart</string>
 </resources>
