@@ -18,7 +18,7 @@ interface AppRepo {
     /** LOCAL */
     suspend fun insertProductToDB(product: Product)
 
-    suspend fun readProductFromDB(productId: Int): Flow<Product>
+    fun readProductFromDB(productId: Int): Flow<Product>
 
     suspend fun deleteProductFromDB(product: Product)
 

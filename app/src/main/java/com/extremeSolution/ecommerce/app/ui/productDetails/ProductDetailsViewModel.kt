@@ -3,11 +3,13 @@ package com.extremeSolution.ecommerce.app.ui.productDetails
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.domain.models.product.Product
+import com.extremeSolution.ecommerce.domain.usecases.local.readProductFromDB.ReadProductFromDBUseCase
 import com.extremeSolution.ecommerce.domain.usecases.remote.productDetails.GetProductDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     private val productDetailsUseCase: GetProductDetailsUseCase,
+    private val readProductFromDBUseCase: ReadProductFromDBUseCase,
     private val networkManager: NetworkManager
 ): ViewModel() {
 
@@ -55,6 +58,12 @@ class ProductDetailsViewModel @Inject constructor(
 
             else -> UiState.Error(ErrorType.UNKNOWN)
         }
+    }
+
+    /** CACHE */
+
+    fun readProductCached(id: Int): LiveData<Product> {
+        return readProductFromDBUseCase.execute(id).asLiveData()
     }
 
 }

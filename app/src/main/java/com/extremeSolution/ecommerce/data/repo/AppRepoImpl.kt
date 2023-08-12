@@ -37,7 +37,7 @@ class AppRepoImpl @Inject constructor(
         return productsDao.insertProduct(product)
     }
 
-    override suspend fun readProductFromDB(productId: Int): Flow<Product> {
+    override fun readProductFromDB(productId: Int): Flow<Product> {
         return productsDao.readProduct(productId)
     }
 

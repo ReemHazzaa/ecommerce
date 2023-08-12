@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
@@ -17,6 +18,7 @@ import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.databinding.FragmentProductDetailsBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProductDetailsFragment : Fragment() {
@@ -33,7 +35,7 @@ class ProductDetailsFragment : Fragment() {
         val view = binding.root
 
         initUI()
-        getDetails()
+        loadDataFromCacheWhenOnline()
 
         return view
     }
@@ -47,8 +49,36 @@ class ProductDetailsFragment : Fragment() {
         binding.apply {
             swipeRefresh.setOnRefreshListener {
                 swipeRefresh.isRefreshing = true
-                getDetails()
-                swipeRefresh.isRefreshing = false
+                loadDataFromCacheWhenOnline()
+            }
+        }
+    }
+
+    private fun loadDataFromCacheWhenOnline() {
+        showLoading()
+
+        lifecycleScope.launch {
+            viewModel.readProductCached(args.productId).observe(viewLifecycleOwner) { product ->
+                if (product?.title != null) {
+                    hideLoading()
+                    populateUI(product)
+                } else {
+                    getDetails()
+                }
+            }
+        }
+    }
+
+    private fun loadDataFromCacheWhenOffline() {
+        lifecycleScope.launch {
+            viewModel.readProductCached(args.productId).observe(viewLifecycleOwner) { product ->
+                if (product?.title != null) {
+                    hideLoading()
+                    populateUI(product)
+                } else {
+                    showError(getString(R.string.no_data_found))
+                }
+
             }
         }
     }
@@ -66,6 +96,7 @@ class ProductDetailsFragment : Fragment() {
 
                 is UiState.Error -> {
                     hideLoading()
+                    loadDataFromCacheWhenOffline()
 
                     val errorMessage = when (response.errorType) {
                         ErrorType.EXCEPTION -> response.message.toString()
@@ -112,6 +143,7 @@ class ProductDetailsFragment : Fragment() {
 
     private fun showLoading() {
         binding.progressBar.makeVisible()
+        if (binding.swipeRefresh.isRefreshing) binding.swipeRefresh.isRefreshing = false
     }
 
     private fun hideLoading() {
