@@ -16,6 +16,7 @@ import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.cart.CartAda
 import com.extremeSolution.ecommerce.databinding.FragmentCartBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -59,9 +60,27 @@ class CartFragment : Fragment() {
             if (cart != null && cart.isNotEmpty()) {
                 hideProductsLoading()
                 populateCartRV(cart)
+
+                calculateTotal(cart)
+
             } else {
                 hideProductsLoading()
                 showError(getString(R.string.empty_cart_msg))
+            }
+        }
+    }
+
+    private fun calculateTotal(cart: List<Product>) {
+        val total = mutableListOf<Float>()
+        cart.forEach { cartItem ->
+            try {
+                total.add(cartItem.price.toFloat())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            binding.tvTotal.text = buildString {
+                append("Total: ")
+                append(total.sum())
             }
         }
     }
