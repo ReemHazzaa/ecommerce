@@ -19,6 +19,7 @@
     <string name="add_to_cart">Add to cart</string>
     <string name="user_reviews">Customer Reviews</string>
     <string name="purchase">Purchase</string>
-    <string name="empty_cart_msg">So sad!! Your cart is empty.\\nWe are positive, you will fill it soon :)</string>
+    <string name="empty_cart_msg">So sad!! Your cart is empty.\nWe are positive, you will fill it soon :)</string>
     <string name="no_data_found">No data found</string>
+    <string name="delete_all_items_in_cart">Delete all items in cart?</string>
 </resources>

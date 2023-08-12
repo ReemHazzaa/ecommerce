@@ -30,4 +30,7 @@ interface ProductsDao {
 
     @Query("UPDATE products_table SET inCart = 0 WHERE id = :productId")
     fun removeProductFromCart(productId: Int)
+
+    @Query("SELECT * FROM products_table WHERE inCart = 1")
+    fun readCart(): Flow<List<Product>>
 }

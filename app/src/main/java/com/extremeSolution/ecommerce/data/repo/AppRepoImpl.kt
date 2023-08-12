@@ -61,6 +61,10 @@ class AppRepoImpl @Inject constructor(
         return productsDao.removeProductFromCart(productId)
     }
 
+    override fun readCart(): Flow<List<Product>> {
+        return productsDao.readCart()
+    }
+
     /** DATASTORE */
     override suspend fun cacheCategories(categories: List<String>) {
         return appDataStore.saveCategories(categories)

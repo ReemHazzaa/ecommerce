@@ -1,7 +1,37 @@
 package com.extremeSolution.ecommerce.app.ui.cart
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.extremeSolution.ecommerce.domain.models.product.Product
+import com.extremeSolution.ecommerce.domain.usecases.local.cart.readCart.ReadCartUseCase
+import com.extremeSolution.ecommerce.domain.usecases.local.cart.removeProductFromCart.RemoveProductFromCartUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CartViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+@HiltViewModel
+class CartViewModel @Inject constructor(
+    readCartUseCase: ReadCartUseCase,
+    private val removeProductFromCartUseCase: RemoveProductFromCartUseCase
+): ViewModel() {
+
+    /** CACHE */
+    val cart: LiveData<List<Product>> = readCartUseCase.execute().asLiveData()
+
+    fun removeProductFromCart(product: Product) {
+        viewModelScope.launch(Dispatchers.IO) {
+            removeProductFromCartUseCase.execute(product.id)
+        }
+    }
+
+    fun emptyCart(list: List<Product>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            for(product in list) {
+                removeProductFromCartUseCase.execute(product.id)
+            }
+        }
+    }
 }
