@@ -141,7 +141,7 @@ class HomeFragment : Fragment() {
     private fun loadDataFromCacheWhenOffline() {
         lifecycleScope.launch {
             viewModel.categoriesCache.observe(viewLifecycleOwner) { cachedCategories ->
-                if (cachedCategories.isNotEmpty()) {
+                if (cachedCategories != null && cachedCategories.isNotEmpty()) {
                     hideCategoriesLoading()
                     populateCategoriesRV(cachedCategories)
                 } else {
