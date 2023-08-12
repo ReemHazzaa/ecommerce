@@ -112,7 +112,18 @@ class HomeFragment : Fragment() {
 
     private fun loadDataFromCacheWhenOnline() {
         showProductsLoading()
+        showCategoriesLoading()
+
         lifecycleScope.launch {
+
+            viewModel.categoriesCache.observe(viewLifecycleOwner) { cachedCategories ->
+                if (cachedCategories != null && cachedCategories.isNotEmpty()) {
+                    hideCategoriesLoading()
+                    populateCategoriesRV(cachedCategories)
+                } else {
+                    getCategoriesAndProductsFromRemote()
+                }
+            }
 
             viewModel.productsCache.observe(viewLifecycleOwner) { database ->
                 if (database.isNotEmpty()) {
@@ -129,6 +140,16 @@ class HomeFragment : Fragment() {
 
     private fun loadDataFromCacheWhenOffline() {
         lifecycleScope.launch {
+            viewModel.categoriesCache.observe(viewLifecycleOwner) { cachedCategories ->
+                if (cachedCategories.isNotEmpty()) {
+                    hideCategoriesLoading()
+                    populateCategoriesRV(cachedCategories)
+                } else {
+                    showErrorCategories(getString(R.string.no_data_found))
+                }
+
+            }
+
             viewModel.productsCache.observe(viewLifecycleOwner) { database ->
                 if (database.isNotEmpty()) {
                     hideProductsLoading()

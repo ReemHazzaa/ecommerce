@@ -1,5 +1,6 @@
 package com.extremeSolution.ecommerce.data.repo
 
+import com.extremeSolution.ecommerce.data.datastore.AppDataStore
 import com.extremeSolution.ecommerce.data.local.ProductsDao
 import com.extremeSolution.ecommerce.data.remote.apiService.FakeStoreApiService
 import com.extremeSolution.ecommerce.domain.models.product.Product
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 class AppRepoImpl @Inject constructor(
     private val apiService: FakeStoreApiService,
-    private val productsDao: ProductsDao
+    private val productsDao: ProductsDao,
+    private val appDataStore: AppDataStore
 ) : AppRepo {
 
     /** REMOTE */
@@ -57,6 +59,15 @@ class AppRepoImpl @Inject constructor(
 
     override suspend fun removeProductFromCart(productId: Int) {
         return productsDao.removeProductFromCart(productId)
+    }
+
+    /** DATASTORE */
+    override suspend fun cacheCategories(categories: List<String>) {
+        return appDataStore.saveCategories(categories)
+    }
+
+    override fun readCategoriesFromCache(): Flow<List<String>> {
+        return appDataStore.readCategories
     }
 
 }

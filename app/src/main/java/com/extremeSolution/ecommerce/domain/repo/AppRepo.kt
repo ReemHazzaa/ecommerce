@@ -29,4 +29,9 @@ interface AppRepo {
     suspend fun addProductToCart(productId: Int)
 
     suspend fun removeProductFromCart(productId: Int)
+
+    /** Datastore */
+    suspend fun cacheCategories(categories: List<String>)
+
+    fun readCategoriesFromCache(): Flow<List<String>>
 }

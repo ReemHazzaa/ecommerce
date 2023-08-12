@@ -9,15 +9,16 @@ import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
 import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.domain.models.product.Product
+import com.extremeSolution.ecommerce.domain.usecases.datastore.cacheCategories.CacheCategoriesUseCase
+import com.extremeSolution.ecommerce.domain.usecases.datastore.readCategories.ReadCachedCategoriesUseCase
 import com.extremeSolution.ecommerce.domain.usecases.local.cacheProduct.CacheProductUseCase
-import com.extremeSolution.ecommerce.domain.usecases.local.readAllProductsFromDB.ReadAllProductsFromDBUseCase
+import com.extremeSolution.ecommerce.domain.usecases.local.readCachedProducts.ReadCachedProductsUseCase
 import com.extremeSolution.ecommerce.domain.usecases.remote.categories.GetCategoriesUseCase
 import com.extremeSolution.ecommerce.domain.usecases.remote.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import retrofit2.Response
@@ -28,7 +29,9 @@ class HomeViewModel @Inject constructor(
     private val categoriesUseCase: GetCategoriesUseCase,
     private val productsUseCase: GetProductsUseCase,
     private val cacheProductUseCase: CacheProductUseCase,
-    private val readAllProductsFromDBUseCase: ReadAllProductsFromDBUseCase,
+    readCachedProductsUseCase: ReadCachedProductsUseCase,
+    private val cacheCategoriesUseCase: CacheCategoriesUseCase,
+    readCachedCategoriesUseCase: ReadCachedCategoriesUseCase,
     private val networkManager: NetworkManager
 ) : ViewModel() {
 
@@ -103,8 +106,10 @@ class HomeViewModel @Inject constructor(
                 ?.toString()?.contains("error", true) == true) ->
                 UiState.Error(ErrorType.API_ERROR)
 
-            categories.code() == 200 && categories.body()?.isNotEmpty() == true ->
+            categories.code() == 200 && categories.body()?.isNotEmpty() == true -> {
+                cacheCategories(categories.body()!!)
                 UiState.Success(categories.body())
+            }
 
             else -> UiState.Error(ErrorType.UNKNOWN)
         }
@@ -112,13 +117,20 @@ class HomeViewModel @Inject constructor(
 
     /** CACHE */
 
-    val productsCache: LiveData<List<Product>> = readAllProductsFromDBUseCase.execute().asLiveData()
+    val productsCache: LiveData<List<Product>> = readCachedProductsUseCase.execute().asLiveData()
+    val categoriesCache: LiveData<List<String>> = readCachedCategoriesUseCase.execute().asLiveData()
 
     private fun cacheProducts(productList: List<Product>) {
         viewModelScope.launch(Dispatchers.IO) {
             productList.forEach { item ->
                 cacheProductUseCase.execute(item)
             }
+        }
+    }
+
+    private fun cacheCategories(categories: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            cacheCategoriesUseCase.execute(categories)
         }
     }
 
