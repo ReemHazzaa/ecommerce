@@ -2,12 +2,17 @@ package com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categoryPro
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.extremeSolution.ecommerce.app.ui.categories.CategoriesFragmentDirections
+import com.extremeSolution.ecommerce.app.ui.home.HomeFragmentDirections
 import com.extremeSolution.ecommerce.databinding.ItemCategoryElectronicsHorizontalBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 
-class ProductsElectronicsAdapter :
+class ProductsElectronicsAdapter(
+    private val navController: NavController
+) :
     RecyclerView.Adapter<ProductsElectronicsAdapter.CustomViewHolder>() {
 
     private var data = emptyList<Product>()
@@ -38,6 +43,12 @@ class ProductsElectronicsAdapter :
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val currentItem = data[position]
         holder.bind(currentItem)
+
+        holder.itemView.setOnClickListener {
+            val action =
+                CategoriesFragmentDirections.actionCategoriesFragmentToProductDetailsFragment(currentItem.id)
+            navController.navigate(action)
+        }
     }
 
     fun setData(newList: List<Product>) {

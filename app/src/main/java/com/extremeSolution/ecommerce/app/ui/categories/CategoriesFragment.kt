@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
@@ -35,16 +36,16 @@ class CategoriesFragment : Fragment() {
         CategoriesAdapter()
     }
     private val productsMenAdapter: ProductsMenAdapter by lazy {
-        ProductsMenAdapter()
+        ProductsMenAdapter(findNavController())
     }
     private val productsWomenAdapter: ProductsWomenAdapter by lazy {
-        ProductsWomenAdapter()
+        ProductsWomenAdapter(findNavController())
     }
     private val productsJeweleryAdapter: ProductsJeweleryAdapter by lazy {
-        ProductsJeweleryAdapter()
+        ProductsJeweleryAdapter(findNavController())
     }
     private val productsElectronicsAdapter: ProductsElectronicsAdapter by lazy {
-        ProductsElectronicsAdapter()
+        ProductsElectronicsAdapter(findNavController())
     }
     private val viewModel: CategoriesViewModel by viewModels()
 
