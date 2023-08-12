@@ -7,20 +7,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
-import com.extremeSolution.ecommerce.app.extensions.showSnackBar
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.categories.CategoriesAdapter
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.products.ProductsAdapter
 import com.extremeSolution.ecommerce.app.uiState.ErrorType
 import com.extremeSolution.ecommerce.app.uiState.UiState
-import com.extremeSolution.ecommerce.data.remote.networkLayer.NetworkManager
 import com.extremeSolution.ecommerce.databinding.FragmentHomeBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel: HomeViewModel by viewModels()
-    private lateinit var networkManager: NetworkManager
+
     private val categoriesAdapter: CategoriesAdapter by lazy {
         CategoriesAdapter()
     }
@@ -45,10 +45,9 @@ class HomeFragment : Fragment() {
         val view = binding.root
 
         productsAdapter = ProductsAdapter(findNavController())
-        networkManager = NetworkManager(this.requireContext())
 
         initUI()
-        getCategoriesAndProducts()
+        loadDataFromCacheWhenOnline()
 
         return view
     }
@@ -62,8 +61,7 @@ class HomeFragment : Fragment() {
         binding.apply {
             swipeRefresh.setOnRefreshListener {
                 swipeRefresh.isRefreshing = true
-                getCategoriesAndProducts()
-                swipeRefresh.isRefreshing = false
+                loadDataFromCacheWhenOnline()
             }
 
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -112,70 +110,91 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-    private fun getCategoriesAndProducts() {
-        showCategoriesLoading()
+    private fun loadDataFromCacheWhenOnline() {
         showProductsLoading()
-        if (networkManager.isNetworkAvailable()) {
+        lifecycleScope.launch {
 
-            viewModel.getCategoriesAndProductsAsync()
-
-            viewModel.categoriesResponse.observe(viewLifecycleOwner) { response ->
-                when (response) {
-                    is UiState.Loading -> showCategoriesLoading()
-                    is UiState.Success -> {
-                        hideCategoriesLoading()
-                        populateCategoriesRV(response.data)
-                    }
-
-                    is UiState.Error -> {
-                        hideCategoriesLoading()
-
-                        val errorMessage = when (response.errorType) {
-                            ErrorType.EXCEPTION -> response.message.toString()
-                            ErrorType.UNKNOWN -> getString(R.string.unidentified_error)
-                            ErrorType.API_ERROR -> getString(R.string.request_is_not_successful)
-                        }
-
-                        showErrorCategories(errorMessage)
-                    }
+            viewModel.productsCache.observe(viewLifecycleOwner) { database ->
+                if (database.isNotEmpty()) {
+                    hideProductsLoading()
+                    globalProductsList.clear()
+                    globalProductsList.addAll(database)
+                    populateProductsRV(database)
+                } else {
+                    getCategoriesAndProductsFromRemote()
                 }
-            }
-
-            viewModel.productsResponse.observe(viewLifecycleOwner) { response ->
-                when (response) {
-                    is UiState.Loading -> showProductsLoading()
-                    is UiState.Success -> {
-                        hideProductsLoading()
-                        populateProductsRV(response.data)
-
-                        globalProductsList.clear()
-                        globalProductsList.addAll(response.data!!)
-                    }
-
-                    is UiState.Error -> {
-                        hideProductsLoading()
-
-                        val errorMessage = when (response.errorType) {
-                            ErrorType.EXCEPTION -> response.message.toString()
-                            ErrorType.UNKNOWN -> getString(R.string.unidentified_error)
-                            ErrorType.API_ERROR -> getString(R.string.request_is_not_successful)
-                        }
-
-                        showErrorProducts(errorMessage)
-                    }
-                }
-            }
-
-        } else {
-            hideCategoriesLoading()
-            hideProductsLoading()
-            getString(R.string.not_connected).let {
-                showErrorCategories(it)
-                showErrorProducts(it)
-                requireActivity().showSnackBar(it)
             }
         }
+    }
+
+    private fun loadDataFromCacheWhenOffline() {
+        lifecycleScope.launch {
+            viewModel.productsCache.observe(viewLifecycleOwner) { database ->
+                if (database.isNotEmpty()) {
+                    hideProductsLoading()
+                    populateProductsRV(database)
+                } else {
+                    showErrorProducts(getString(R.string.no_data_found))
+                }
+            }
+        }
+    }
+
+    private fun getCategoriesAndProductsFromRemote() {
+        showCategoriesLoading()
+        showProductsLoading()
+
+        viewModel.getCategoriesAndProductsSafeCall()
+
+        viewModel.categoriesResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is UiState.Loading -> showCategoriesLoading()
+                is UiState.Success -> {
+                    hideCategoriesLoading()
+                    populateCategoriesRV(response.data)
+                }
+
+                is UiState.Error -> {
+                    hideCategoriesLoading()
+
+                    val errorMessage = when (response.errorType) {
+                        ErrorType.EXCEPTION -> response.message.toString()
+                        ErrorType.UNKNOWN -> getString(R.string.unidentified_error)
+                        ErrorType.API_ERROR -> getString(R.string.request_is_not_successful)
+                    }
+
+                    showErrorCategories(errorMessage)
+                }
+            }
+        }
+
+        viewModel.productsResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is UiState.Loading -> showProductsLoading()
+                is UiState.Success -> {
+                    hideProductsLoading()
+                    populateProductsRV(response.data)
+
+                    globalProductsList.clear()
+                    globalProductsList.addAll(response.data!!)
+                }
+
+                is UiState.Error -> {
+                    hideProductsLoading()
+
+                    loadDataFromCacheWhenOffline()
+
+                    val errorMessage = when (response.errorType) {
+                        ErrorType.EXCEPTION -> response.message.toString()
+                        ErrorType.UNKNOWN -> getString(R.string.unidentified_error)
+                        ErrorType.API_ERROR -> getString(R.string.request_is_not_successful)
+                    }
+
+                    showErrorProducts(errorMessage)
+                }
+            }
+        }
+
     }
 
     private fun populateCategoriesRV(data: List<String>?) {
@@ -224,6 +243,7 @@ class HomeFragment : Fragment() {
             progressBarProducts.makeInVisible()
             rvProducts.makeVisible()
             errorLayoutProducts.makeInVisible()
+            if (swipeRefresh.isRefreshing) swipeRefresh.isRefreshing = false
         }
     }
 

@@ -20,4 +20,5 @@
     <string name="user_reviews">Customer Reviews</string>
     <string name="purchase">Purchase</string>
     <string name="empty_cart_msg">So sad!! Your cart is empty.\\nWe are positive, you will fill it soon :)</string>
+    <string name="no_data_found">No data found</string>
 </resources>

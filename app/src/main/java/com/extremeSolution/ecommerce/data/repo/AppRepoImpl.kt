@@ -13,7 +13,7 @@ class AppRepoImpl @Inject constructor(
     private val productsDao: ProductsDao
 ) : AppRepo {
 
-    // REMOTE
+    /** REMOTE */
     override suspend fun getCategoriesList(): Response<List<String>> {
         return apiService.getCategoriesList()
     }
@@ -30,7 +30,7 @@ class AppRepoImpl @Inject constructor(
         return apiService.getProductDetails(productId)
     }
 
-    // LOCAL
+    /** LOCAL */
     override suspend fun insertProductToDB(product: Product) {
         return productsDao.insertProduct(product)
     }
@@ -43,7 +43,7 @@ class AppRepoImpl @Inject constructor(
         return productsDao.deleteProduct(product)
     }
 
-    override suspend fun readAllProductsFromDB(): Flow<List<Product>> {
+    override fun readAllProductsFromDB(): Flow<List<Product>> {
         return productsDao.readAllProducts()
     }
 

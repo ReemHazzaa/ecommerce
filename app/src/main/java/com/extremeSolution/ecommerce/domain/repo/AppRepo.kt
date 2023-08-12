@@ -6,7 +6,7 @@ import retrofit2.Response
 
 interface AppRepo {
 
-    // REMOTE
+    /** REMOTE */
     suspend fun getCategoriesList(): Response<List<String>>
 
     suspend fun getAllProducts(): Response<List<Product>>
@@ -15,14 +15,14 @@ interface AppRepo {
 
     suspend fun getProductDetails(productId: Int): Response<Product>
 
-    // LOCAL
+    /** LOCAL */
     suspend fun insertProductToDB(product: Product)
 
     suspend fun readProductFromDB(productId: Int): Flow<Product>
 
     suspend fun deleteProductFromDB(product: Product)
 
-    suspend fun readAllProductsFromDB(): Flow<List<Product>>
+    fun readAllProductsFromDB(): Flow<List<Product>>
 
     suspend fun deleteAllProductsFromDB()
 
