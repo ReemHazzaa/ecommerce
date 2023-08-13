@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.extremeSolution.ecommerce.app.extensions.setCategoryRvItemColors
 import com.extremeSolution.ecommerce.databinding.ItemCategoryBinding
 
 class CategoriesAdapter : RecyclerView.Adapter<CategoriesAdapter.CustomViewHolder>() {
@@ -14,8 +15,10 @@ class CategoriesAdapter : RecyclerView.Adapter<CategoriesAdapter.CustomViewHolde
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(category: String) {
-            binding.item = category
-            binding.executePendingBindings()
+            binding.apply {
+                tvTitle.text = category
+                tvTitle.setCategoryRvItemColors(category)
+            }
         }
 
         companion object {
