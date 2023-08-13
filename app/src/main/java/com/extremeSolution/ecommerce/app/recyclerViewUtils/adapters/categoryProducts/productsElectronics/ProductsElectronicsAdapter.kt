@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.extremeSolution.ecommerce.app.extensions.loadImageWithPicasso
+import com.extremeSolution.ecommerce.app.extensions.setDoubleValueToTextView
 import com.extremeSolution.ecommerce.app.ui.categories.CategoriesFragmentDirections
 import com.extremeSolution.ecommerce.app.ui.home.HomeFragmentDirections
 import com.extremeSolution.ecommerce.databinding.ItemCategoryElectronicsHorizontalBinding
@@ -21,8 +23,11 @@ class ProductsElectronicsAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
-            binding.item = product
-            binding.executePendingBindings()
+            binding.apply {
+                tvPrice.setDoubleValueToTextView(product.price)
+                tvTitle.text = product.title
+                ivImage.loadImageWithPicasso(product.image)
+            }
         }
 
         companion object {
