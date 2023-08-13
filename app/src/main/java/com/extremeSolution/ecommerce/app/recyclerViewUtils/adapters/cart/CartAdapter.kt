@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.extremeSolution.ecommerce.app.extensions.loadImageWithPicasso
+import com.extremeSolution.ecommerce.app.extensions.setDoubleValueToTextView
 import com.extremeSolution.ecommerce.databinding.ItemCartBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 
@@ -17,9 +19,11 @@ class CartAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
-            binding.item = product
-            binding.executePendingBindings()
-
+            binding.apply {
+                ivImage.loadImageWithPicasso(product.image)
+                tvTitle.text = product.title
+                tvPrice.setDoubleValueToTextView(product.price)
+            }
         }
 
         companion object {
