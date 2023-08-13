@@ -13,11 +13,14 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.extremeSolution.ecommerce.R
+import com.extremeSolution.ecommerce.app.mappers.mapCategoryTitleToBgColor
+import com.extremeSolution.ecommerce.app.mappers.mapCategoryTitleToColor
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
@@ -53,6 +56,22 @@ fun ImageView.loadImageWithPicasso(imageUri: String) {
         .placeholder(R.drawable.image_gallery)
         .error(R.drawable.error)
         .into(this);
+}
+
+fun TextView.setDoubleValueToTextView(doubleValue: Double) {
+    this.text = doubleValue.toString()
+}
+
+fun TextView.setCategoryTvTxtColor(category: String) {
+    val categoryColor = mapCategoryTitleToColor(category, this.context)
+    this.setTextColor(categoryColor)
+}
+
+fun TextView.setCategoryRvItemColors(category: String) {
+    val categoryTxtColor = mapCategoryTitleToColor(category, this.context)
+    val categoryBgColor = mapCategoryTitleToBgColor(category, this.context)
+    this.setTextColor(categoryTxtColor)
+    this.setBackgroundColor(categoryBgColor)
 }
 
 fun Application.loadDrawable(@DrawableRes id: Int): Drawable {
