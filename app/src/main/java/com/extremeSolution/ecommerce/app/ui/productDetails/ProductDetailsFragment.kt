@@ -136,8 +136,9 @@ class ProductDetailsFragment : Fragment() {
 
 
         data?.let {
-            imageList.add(SlideModel(data.image, data.title + "1", ScaleTypes.CENTER_INSIDE))
-            imageList.add(SlideModel(data.image, data.title + "2", ScaleTypes.CENTER_INSIDE))
+            imageList.add(SlideModel(data.image, data.title, ScaleTypes.CENTER_INSIDE))
+            imageList.add(SlideModel(data.image, data.title, ScaleTypes.CENTER_CROP))
+            imageList.add(SlideModel(data.image, data.title, ScaleTypes.FIT))
 
             binding.apply {
                 tvTitle.text = data.title
