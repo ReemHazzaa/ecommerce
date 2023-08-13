@@ -18,10 +18,10 @@ import com.extremeSolution.ecommerce.domain.usecases.remote.products.GetProducts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import retrofit2.Response
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -134,5 +134,31 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /** SEARCH */
+
+    fun searchProducts(sQuery: String, globalProductsList: List<Product>): List<Product> {
+        val searchList = mutableListOf<Product>()
+
+        // running a for loop to compare elements.
+        for (item in globalProductsList) {
+            // checking if the entered string matched with any item of our recycler view.
+            if (item.category.lowercase(Locale.getDefault())
+                    .contains(sQuery.lowercase(Locale.getDefault()))
+                || item.title.lowercase(Locale.getDefault())
+                    .contains(sQuery.lowercase(Locale.getDefault()))
+                || item.description.lowercase(Locale.getDefault())
+                    .contains(sQuery.lowercase(Locale.getDefault()))
+            ) {
+                // if the item is matched we are
+                // adding it to our filtered list.
+                searchList.add(item)
+            }
+        }
+        return if (sQuery == "") {
+            globalProductsList
+        } else {
+            searchList
+        }
+    }
 
 }

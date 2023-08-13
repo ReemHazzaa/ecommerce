@@ -70,43 +70,18 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    newText?.let { searchProducts(it) }
+                    newText?.let {
+                        val result = viewModel.searchProducts(it, globalProductsList)
+                        if (result.isEmpty()) {
+                            showErrorProducts(getString(R.string.no_data_found))
+                        } else {
+                            productsAdapter.setData(result)
+                        }
+                    }
                     return false
                 }
 
             })
-        }
-    }
-
-    private fun searchProducts(sQuery: String) {
-        val searchList = mutableListOf<Product>()
-
-        // running a for loop to compare elements.
-        for (item in globalProductsList) {
-            // checking if the entered string matched with any item of our recycler view.
-            if (item.category.lowercase(Locale.getDefault())
-                    .contains(sQuery.lowercase(Locale.getDefault()))
-                || item.title.lowercase(Locale.getDefault())
-                    .contains(sQuery.lowercase(Locale.getDefault()))
-                || item.description.lowercase(Locale.getDefault())
-                    .contains(sQuery.lowercase(Locale.getDefault()))
-            ) {
-                // if the item is matched we are
-                // adding it to our filtered list.
-                searchList.add(item)
-            }
-        }
-        if (searchList.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
-            showErrorProducts("No Data Found..")
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
-            productsAdapter.setData(searchList)
-        }
-        if (sQuery == "") {
-            populateProductsRV(globalProductsList)
         }
     }
 
