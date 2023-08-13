@@ -12,11 +12,11 @@ import com.extremeSolution.ecommerce.R
 import com.extremeSolution.ecommerce.app.extensions.makeInVisible
 import com.extremeSolution.ecommerce.app.extensions.makeVisible
 import com.extremeSolution.ecommerce.app.extensions.showAppDialog
+import com.extremeSolution.ecommerce.app.extensions.showSnackBar
 import com.extremeSolution.ecommerce.app.recyclerViewUtils.adapters.cart.CartAdapter
 import com.extremeSolution.ecommerce.databinding.FragmentCartBinding
 import com.extremeSolution.ecommerce.domain.models.product.Product
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Exception
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -47,9 +47,7 @@ class CartFragment : Fragment() {
     private fun initUI() {
         binding.apply {
             fabEmptyCart.setOnClickListener {
-                requireActivity().showAppDialog(body = getString(R.string.delete_all_items_in_cart),
-                    posClicked = { emptyCart() },
-                    negClicked = {})
+                attemptEmptyCart()
             }
         }
     }
@@ -70,10 +68,14 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun emptyCart() {
+    private fun attemptEmptyCart() {
         viewModel.cart.observe(viewLifecycleOwner) { products ->
             if (products != null && products.isNotEmpty()) {
-                viewModel.emptyCart(products)
+                requireActivity().showAppDialog(body = getString(R.string.delete_all_items_in_cart),
+                    posClicked = { viewModel.emptyCart(products) },
+                    negClicked = {})
+            } else {
+                requireActivity().showSnackBar(message = getString(R.string.cart_is_empty))
             }
         }
     }
