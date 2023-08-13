@@ -10,6 +10,7 @@ import com.extremeSolution.ecommerce.domain.usecases.local.cart.removeProductFro
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +18,23 @@ class CartViewModel @Inject constructor(
     readCartUseCase: ReadCartUseCase,
     private val removeProductFromCartUseCase: RemoveProductFromCartUseCase
 ): ViewModel() {
+
+    fun calculateTotal(cart: List<Product>): String {
+        val total = mutableListOf<Float>()
+        var totalString = ""
+        cart.forEach { cartItem ->
+            try {
+                total.add(cartItem.price.toFloat())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            totalString = buildString {
+                append("Total: ")
+                append(total.sum())
+            }
+        }
+        return totalString
+    }
 
     /** CACHE */
     val cart: LiveData<List<Product>> = readCartUseCase.execute().asLiveData()

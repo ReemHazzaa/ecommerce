@@ -61,26 +61,11 @@ class CartFragment : Fragment() {
                 hideProductsLoading()
                 populateCartRV(cart)
 
-                calculateTotal(cart)
+                binding.tvTotal.text = viewModel.calculateTotal(cart)
 
             } else {
                 hideProductsLoading()
                 showError(getString(R.string.empty_cart_msg))
-            }
-        }
-    }
-
-    private fun calculateTotal(cart: List<Product>) {
-        val total = mutableListOf<Float>()
-        cart.forEach { cartItem ->
-            try {
-                total.add(cartItem.price.toFloat())
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            binding.tvTotal.text = buildString {
-                append("Total: ")
-                append(total.sum())
             }
         }
     }
